@@ -1,0 +1,33 @@
+name: APK Uretici
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Node.js Kur
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Paketleri Yukle
+        run: npm install
+
+      - name: Expo CLI Kur
+        run: npm install --global eas-cli
+
+      - name: Android APK Build Al
+        run: |
+          npx expo prebuild
+          cd android && ./gradlew assembleRelease
+
+      - name: APK Dosyasini Indirilebilir Yap
+        uses: actions/upload-artifact@v3
+        with:
+          name: HuzurVakti-App
+          path: android/app/build/outputs/apk/release/app-release.apk
