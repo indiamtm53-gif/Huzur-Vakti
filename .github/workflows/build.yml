@@ -3,6 +3,7 @@ name: APK Uretici
 on:
   push:
     branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -10,21 +11,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Java (JDK 17) Kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
       - name: Node.js Kur
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
 
       - name: Paketleri Yukle
         run: npm install
 
-      - name: Expo CLI Kur
-        run: npm install --global eas-cli
+      - name: Android Klasorunu Oluştur (Prebuild)
+        run: npx expo prebuild --platform android
 
       - name: Android APK Build Al
         run: |
-          npx expo prebuild
-          cd android && ./gradlew assembleRelease
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleRelease
 
       - name: APK Dosyasini Indirilebilir Yap
         uses: actions/upload-artifact@v4
