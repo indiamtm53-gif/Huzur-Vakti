@@ -1,41 +1,38 @@
-name: APK Uretici
+name: Android APK Oluştur
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Java (JDK 17) Kur
+      - name: Kodu çek
+        uses: actions/checkout@v4
+
+      - name: JDK kur
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Node.js Kur
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
+      - name: Gradle wrapper'a çalıştırma izni ver
+        run: chmod +x ./gradlew
 
-      - name: Paketleri Yukle
-        run: npm install
+      - name: Debug APK oluştur
+        run: ./gradlew assembleDebug
 
-      - name: Android Klasorunu Oluştur (Prebuild)
-        run: npx expo prebuild --platform android
+      # Release APK istersen aşağıdakini de ekleyebilirsin:
+      # - name: Release APK oluştur
+      #   run: ./gradlew assembleRelease
 
-      - name: Android APK Build Al
-        run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleRelease
-
-      - name: APK Dosyasini Indirilebilir Yap
+      - name: APK'yı artifact olarak yükle
         uses: actions/upload-artifact@v4
         with:
-          name: HuzurVakti-App
-          path: android/app/build/outputs/apk/release/app-release.apk
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
