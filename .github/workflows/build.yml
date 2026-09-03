@@ -8,10 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Node.js Kur
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
@@ -27,7 +27,7 @@ jobs:
           cd android && ./gradlew assembleRelease
 
       - name: APK Dosyasini Indirilebilir Yap
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: HuzurVakti-App
           path: android/app/build/outputs/apk/release/app-release.apk
